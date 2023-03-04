@@ -1,0 +1,13 @@
+// audio.sco.default.so
+cc_library_shared {
+    name: "audio.sco.default",
+
+    srcs: ["audio_sco_hw.c"],
+
+    shared_libs: [
+        "liblog",
+        "libcutils",
+    ],
+
+    cflags: ["-Wno-unused-parameter"],
+}

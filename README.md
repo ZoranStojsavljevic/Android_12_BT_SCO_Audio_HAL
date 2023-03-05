@@ -1,47 +1,82 @@
-### Android 12 BT SCO Audio_HAL
+### Android 12 Bluedroid BT SCO Audio HAL
 
-[IMPORTANT] It supposed to be NXP implementation of the Android 12 BT SCO
-Audio HAL. The whole Android 12 tree is in fact downloaded from the NXP site!
+[IMPORTANT] It supposed to be NXP implementation of the Android 12 Bluedroid
+BT SCO Audio HAL. The whole Android 12 tree is in fact downloaded from the
+NXP site!
 
-Initially approximately (Android 12) 150 mio lines of code downloded... What
-a lovely mess!
+Initially approximately (Android 12) 150 million lines of code downloded...
+1059 git repos. What a lovely mess!
 
-I sincerely hope that this vendor BT SCO Audio HAL implementation, shown
-here, is a very generic one (NOT bound to the specific vendor code
-modifications)!
+I sincerely hope that this vendor Bluedroid BT SCO Audio HAL implementation,
+shown here, is a very generic one (NOT dependent from the specific HW/FW
+vendor code modifications)!
 
 #### System Architecture
 
-The sketch of the BT SCO Audio HAL system architecture is shown here:
+The sketch of the Bluedroid BT SCO Audio HAL position in the BT
+system architecture is shown below (extremely simplified arch. 
+presentation):
 
-        Audio Policy Service
-                |
-                V
-        Audio Flinger Service
-                |
-                V
-          BT SCO Audio HAL
-                |                                  +------> Host Controler Interface
-                V                                  |                  |
-        Unix Socket Client                 Unix Socket Server         V
-      (SCO and data sockets)             (SCO and data sockets)       |
-                |                                  ^                  V
-                V                                  |                  |
-           Linux Kernel   (context switch)    Linux Kernel            V
-                |                                  ^                  |
-                | (PID1) UNIX Domain Socket (PID2) |                  V
-                V     Only local communication     |                  |
-                +----------------------------------+                  V
-                                                                UART/SPI/USB
+                                      AOSP Apps
+                                          |
+                                          V
+                                   AOSP Framework
+                                          |
+                                          V
+                                      [Binder]
+                                          |
+                                          V
+                                 Bluetooth Service
+                                          |
+                                          V
+                +-------------------------+-------------------------+
+                |                                                   |
+                V                                                   V
+        Audio Policy Service                            BlueTooth InterFace (BTIF)
+        (croot/device/vendor/device_type/device/ \      (croot/system/btif/)
+        audio_policy_configuration.xml)                             |
+                |                                                   V
+                V                                                   |
+        Audio Flinger Service                                       V
+        (croot/frameworks/av/services/audioflinger/)     Bluetooth App. Layer (BTA)
+                |                                        (croot/system/bta/)
+                V                                                   |
+       +------------------+                                         V
+       | BT SCO Audio HAL |                                         |
+       +------------------+                                         V
+       (vendor/nxp-opensource/imx/audio/bt_sco_hal/)                |
+                |                                                   V
+                v                                 +------> Host Controler Interface
+                |                                 ^        (croot/system/bt/hci/)
+                V                                 |                 |
+        Unix Socket Client                Unix Socket Server        V
+      (SCO and data sockets)            (SCO and data sockets)      |
+                |                                 ^                 V
+                V                                 |         Broadcom Specific
+                |          Linux Kernel           ^         HCI implementation
+                V   (PID1) context switch (PID2)  |         (croot/hardware/broadcom/libbt/)
+                |       UNIX Domain Sockets       ^                 |
+                V     Only local communication    |                 V
+                +---------------------------------+   UART/SPI/USB ---> to BT controller
+
+The C code explored in this repo is ONLY the tiny square called BT SCO Audio HAL
+(Bluedroid BT SCO Audio HAL):
+
+        +------------------+
+        | BT SCO Audio HAL |
+        +------------------+
+        (vendor/nxp-opensource/imx/audio/bt_sco_hal/)
+
+It proves/shows the complexity of the Bluedroid stack!
 
 #### Interface definitions
 
 The intention of the repo author is to write some meaningful documentation
-about the very small part of the croot/system/bt, the Android 12 BT SCO
-Audio HAL which finalizes xfer of the CTRL Synchronous Connection-Oriented
-(SCO) and audio (data) channels.
+about the very small part of the croot/system/bt, the Android 12 Bluedroid
+BT SCO Audio HAL which finalizes xfer of the CTRL Synchronous Connection
+Oriented (SCO) and audio (data) channels.
 
-The  story should start from the interfaces definitions. The best place to
+The story should start from the interfaces definitions. The best place to
 start are the interface definitions, which are placed in this file:
 
 	croot/hardware/libhardware/include/hardware/audio.h
@@ -75,9 +110,10 @@ the following:
 
 	61	#define AUDIO_DEVICE_API_VERSION_CURRENT AUDIO_DEVICE_API_VERSION_3_2
 
-Here, the very important fact to mention is that BT SCO Audio HAL runs in
-the contex of Audio Flinger (the same process PID), where the context switch
-happens in the form of UNUX sockets (two channels, SCO CTRL and Audio data).
+Here, the very important fact to mention is that Bluedroid BT SCO Audio HAL
+runs in the contex of Audio Flinger (the same process PID), where the context
+switch happens in the form of UNIX sockets (two channels, SCO CTRL and Audio
+data).
 
 This fact will be reiterated couple of times in this document.
 
@@ -99,7 +135,7 @@ The Android 12 location:
 	croot/frameworks/av/services/audioflinger/AudioFlinger.h
 
 To be up to the metal, the important part of this presentation is given here
-(if you know what I am writing 'bout, you are on the right track):
+(if you know what I am writing about, you are on the right track):
 
 	879    // for dump, indicates which hardware operation is currently in progress (but not stream ops)
 	880    enum hardware_call_state {
@@ -160,13 +196,14 @@ And here it is... The beloved Example (from above function: openOutput_l)!
 	2552		config,
 	2553		address.string());
 
-This is actually a callback from Audio Flinger to the BT SCO Audio HAL.
+This is actually a callback from Audio Flinger to the Bluedroid BT SCO
+Audio HAL.
 
 Precisely, to this source code location (we are tracking here):
 
 	/vendor/nxp-opensource/imx/audio/bt_sco_hal/audio_sco_hw.c
 
-To this function in BT SCO Audio HAL via the following setup:
+To this function in Bluedroid BT SCO Audio HAL via the following setup:
 
 	912	adev->device.open_output_stream = adev_open_output_stream;
 
@@ -180,25 +217,25 @@ Described here:
 	617					struct audio_stream_out **stream_out,
 	618					const char *address)
 
-Please, do remember! BT SCO Audio HAL runs in the contex of Audio Flinger
-(the same process PID), where the context change happens in the form of
-UNIX sockets (two channels, SCO CTRL and Audio data).
+Please, do remember! Bluedroid BT SCO Audio HAL runs in the contex of
+Audio Flinger (the same process PID), where the context change happens
+in the form of UNIX sockets (two sockets, SCO CTRL and Audio data).
 
 The UNIX sockets are (by example) shown here:
 
 UNIX Socket Client:
+
 https://github.com/ZoranStojsavljevic/test-socket-if/tree/master/UNIX_socket/unix_client
 
 UNIX Socket Server:
+
 https://github.com/ZoranStojsavljevic/test-socket-if/tree/master/UNIX_socket/unix_server
 
-
-
-#### Layer beneath Audio Flinger: Android 12 BT SCO Audio HAL
+#### Layer beneath Audio Flinger: Android 12 Bluedroid BT SCO Audio HAL
 
 The default (some ideas required for true porting) location in Android 12.
 
-BT SCO Audio HAL:
+Bluedroid BT SCO Audio HAL:
 
 	croot/vendor/nxp-opensource/imx/audio
 

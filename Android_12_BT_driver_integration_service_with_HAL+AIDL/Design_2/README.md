@@ -184,7 +184,7 @@ to access the Bluetooth hardware.
 Modify the SELinux policies to allow the service and HAL to
 interact with the hardware and other system components securely.
 
-Example (SELinux policy):
+Example (SELinux policy .te file):
 
 	allow bluetooth_service bluetooth_device:chr_file rw_file_perms;
 

@@ -87,7 +87,7 @@ between applications and the underlying operating system.
 	- Implements Binder IPC (Inter-Process Communication), ensuring secure
 	  communication between applications and system processes.
 
-7. Customization and OEM Integration
+#### 7. Customization and OEM Integration
 
 	- Acts as the starting point for device manufacturers and custom ROM
 	  developers to tailor Android's behavior.

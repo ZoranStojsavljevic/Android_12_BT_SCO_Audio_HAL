@@ -1,8 +1,8 @@
-## Compiling the entire Android 12 source code
+## Fetching and compiling the entire Android 12 source code
 
-Compiling the entire Android 12 source code requires a
-well-prepared environment and understanding of the build
-process.
+Fetching and compiling the entire Android 12 source code
+requires a well-prepared environment and understanding of
+the build process.
 
 Below is a professional and comprehensive guide:
 
@@ -31,7 +31,10 @@ Below is a professional and comprehensive guide:
 	  x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc \
 	  unzip fontconfig python-is-python3 libncurses5
 
-#### Install Repo Tool
+#### [OPTIONAL] Install Repo Tool (if does not exist)
+
+If there is no ~/bin/repo tool installed, the next steps must be
+performed!
 
 The repo tool is used to manage the Android source tree:
 
@@ -45,6 +48,10 @@ The repo tool is used to manage the Android source tree:
 Ensure Java is set to OpenJDK 11:
 
 	$ sudo update-alternatives --config java
+
+Make sure the Java environment is set correctly by running:
+
+	$ java -version
 
 ### 2. Download the Android 12 Source Code
 
@@ -110,9 +117,19 @@ Common build variants:
 
 	    This is shorthand for the same build command.
 
-#### 2. Monitor Build Progress
+#### 2. [OPTIONAL] to build specific components
 
-	The build process can take 1-3 hours or more, depending on your hardware.
+To build only the system image:
+
+	$ make systemimage
+
+To build the boot image:
+
+	$ make bootimage
+
+#### 3. Monitor Build Progress
+
+	The build process can take 1-12 hours or more, depending on your hardware.
 
 	Output files will be generated in the out/target/product/<device> directory.
 
@@ -152,29 +169,28 @@ Common build variants:
 
 ### 7. Debugging Build Issues
 
-#### Clean Build Environment
+#### 1. Clean Build Environment
 
-	If the build fails due to previous configurations:
+If the build fails due to previous configurations:
 
 	$ make clean
 
-#### Verbose Build Output
+#### 2. Verbose Build Output
 
 	For detailed error logs:
 
 	$ make -j$(nproc) showcommands
 
-#### Check Missing Dependencies
+#### 3. Check Missing Dependencies
 
 	Ensure all libraries and tools are correctly installed.
 
 ### 8. Optimize for Incremental Builds
 
-	After the initial build, subsequent builds can be sped up by
-	  recompiling only changes:
+After the initial build, subsequent builds can be sped up by
+recompiling only changes:
 
 	$ make installclean
-
 	$ make -j$(nproc)
 
 ### 9. Professional Tips

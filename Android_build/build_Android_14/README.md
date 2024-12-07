@@ -14,7 +14,7 @@ Set Up Development Environment:
 
 #### System Requirements
 
-Before start, ensure that your development machine meets the
+Before start, ensure that the development machine meets the
 following prerequisites:
 
 	- Operating System: Ubuntu (or other Linux-based OS) is
@@ -84,13 +84,13 @@ performed!
 
 The Android source code is managed using repo, a tool developed
 by Google to simplify working with multiple Git repositories.
-You need to install it first.
+Repo needs to be installed first.
 
 	$ mkdir -p ~/bin
 	$ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 	$ chmod a+x ~/bin/repo
 
-Ensure that ~/bin is added to your PATH environment variable.
+Ensure that ~/bin is added to the PATH environment variable.
 
 	$ export PATH=~/bin:$PATH
 
@@ -125,7 +125,7 @@ Download the entire source code (~100GB+):
 
 	$ repo sync -j$(nproc)
 
-Add --no-clone-bundle if you face shallow clone issues:
+Add --no-clone-bundle if shallow clone issues are faced:
 
 	$ repo sync -j$(nproc) --no-clone-bundle
 
@@ -188,8 +188,8 @@ To build the boot image:
 
 #### 3. Monitor Build Progress
 
-The build process can take 1-12 hours or more, depending on your
-hardware.
+The build process can take 1-12 hours or more, depending on the
+hardware used.
 
 Output files will be generated in the following directory:
 
@@ -226,7 +226,7 @@ The Android codebase is modular. Frameworks, system apps etc.
 can be modifid, or add a new functionality.
 
 After making changes, rebuild the specific components (e.g.,
-make systemimage) and flash them to your device.
+make systemimage) and flash them to the target device.
 
 #### 2. Contribute Back (Optional):
 
@@ -268,6 +268,6 @@ Fetching and compiling Android 14 from source requires an
 understanding of the tools involved and careful setup of the
 build environment. By following these professional steps, it
 will be able to download, compile, and customize the Android 14
-codebase for your specific needs. This process is invaluable
+codebase for the specific needs. This process is invaluable
 for deep customization, device support, and contributing to the
 Android Open Source Project.

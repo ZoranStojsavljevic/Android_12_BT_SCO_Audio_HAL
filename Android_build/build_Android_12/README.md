@@ -72,7 +72,7 @@ Download the entire source code (~100GB+):
 
 	$ repo sync -j$(nproc)
 
-Add --no-clone-bundle if you face shallow clone issues:
+Add --no-clone-bundle if facing shallow clone issues:
 
 	$ repo sync -j$(nproc) --no-clone-bundle
 
@@ -129,9 +129,11 @@ To build the boot image:
 
 #### 3. Monitor Build Progress
 
-	The build process can take 1-12 hours or more, depending on your hardware.
+	The build process can take 1-12 hours or more, depending on the
+	  hardware used.
 
-	Output files will be generated in the out/target/product/<device> directory.
+	Output files will be generated in the out/target/product/<device>
+	  directory.
 
 ### 5. Flash the Built System
 
@@ -142,7 +144,7 @@ To build the boot image:
 	Boot the device into fastboot mode (power + volume down key
 	  for most devices).
 
-#### 2. Connect to Your Computer: Verify the device connection:
+#### 2. Connect to the Computer: Verify the device connection:
 
 	$ fastboot devices
 
@@ -150,7 +152,7 @@ To build the boot image:
 
 	$ fastboot flashall
 
-	Ensure your device's bootloader is unlocked.
+	Ensure the target device's bootloader is unlocked.
 
 #### 4. Reboot the Device:
 
@@ -222,7 +224,7 @@ recompiling only changes:
 
 	  userdata.img: User data partition image.
 
-By following this process, you can build the entire Android 12
-source professionally and efficiently.
+By following this process, the entire Android 12 source can be
+built professionally and efficiently.
 
 Troubleshooting or optimizing chapters are missing!

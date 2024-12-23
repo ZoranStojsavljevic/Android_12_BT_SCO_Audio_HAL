@@ -92,7 +92,7 @@ Use the lunch command to choose the target device and build variant:
 
 Example for a generic ARM64 device:
 
-	$ lunch aosp_arm64-eng
+	$ lunch aosp_arm64-userdebug
 
 Common build variants:
 
